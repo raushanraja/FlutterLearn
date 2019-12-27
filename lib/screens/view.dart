@@ -1,14 +1,12 @@
+import 'package:basic_app/classes/Chart.dart';
+import 'package:basic_app/classes/mqtt.dart';
+import 'package:basic_app/components/Connection.dart';
+import 'package:basic_app/components/WeatherMeter.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_circular_chart/flutter_circular_chart.dart';
-import 'package:mqtt/classes/Chart.dart';
-import 'package:mqtt/components/Connection.dart';
-import 'package:mqtt/components/WeatherMeter.dart';
-import 'package:mqtt/classes/mqtt.dart';
 import 'package:mqtt_client/mqtt_client.dart';
-
 import '../constants.dart';
-
 class View extends StatefulWidget {
   @override
   _ViewState createState() => _ViewState();
