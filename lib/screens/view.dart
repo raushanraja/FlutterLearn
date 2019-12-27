@@ -13,6 +13,9 @@ class View extends StatefulWidget {
 }
 
 class _ViewState extends State<View> {
+
+
+
   //  Chart Config Start
   static final GlobalKey<AnimatedCircularChartState> chartKey =
       GlobalKey<AnimatedCircularChartState>();
@@ -20,17 +23,6 @@ class _ViewState extends State<View> {
   Chart tempChart =
       Chart(initialValue: 10, chartKey: chartKey, chartSize: chartSize);
 
-  void _increment(x) {
-    setState(() {
-      _value += x;
-      List<CircularStackEntry> data = tempChart.generateChart(
-          value: _value,
-          dialColor: Colors.red,
-          rankKey1: "percentage",
-          rankKey2: "percentage");
-      chartKey.currentState.updateData(data);
-    });
-  }
 
   void _setValue(x) {
     setState(() {
@@ -108,11 +100,24 @@ class _ViewState extends State<View> {
 
 //  MQTT Config End
 
+
+  @override
+  void dispose(){
+    mqttConnect.disconnect();
+    super.dispose();
+  }
+
+
+
 //  State Variables
   String message = "Disconnected";
   Color _display = Colors.white;
   double _value = 10;
   bool _ledSwitch = false;
+
+
+
+
   @override
   Widget build(BuildContext context) {
     return (Scaffold(
