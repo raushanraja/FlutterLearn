@@ -52,25 +52,43 @@ class _MyHomePageState extends State<MyHomePage> {
             children: <Widget>[
               Row(
                 children: <Widget>[
-                  Expanded(
-                    child: FlatButton.icon(
-                      icon: Icon(Icons.account_box),
-                      label: Text("Admission Screen"),
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => AdmissionScreen(),
-                          ),
-                        );
-                      },
-                    ),
+                  IconButton(
+                    icon: Icons.account_box,
+                    label: "Admission",
+                    screen: AdmissionScreen(),
                   ),
                   // Expanded(child: ,),
                   // Expanded(child: ,),
                 ],
               )
             ]),
+      ),
+    );
+  }
+}
+
+class IconButton extends StatelessWidget {
+  final String label;
+  final icon;
+  final screen;
+
+  IconButton(
+      {@required this.icon, @required this.label, @required this.screen});
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: FlatButton.icon(
+        icon: Icon(icon),
+        label: Text(label),
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => screen,
+            ),
+          );
+        },
       ),
     );
   }
