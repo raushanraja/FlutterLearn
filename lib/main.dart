@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sqflite_db/db_helper.dart';
 import 'package:sqflite_db/models/school_info.dart';
+import 'package:sqflite_db/screens/admission_screen.dart';
 
 void main() => runApp(MyApp());
 
@@ -47,121 +48,29 @@ class _MyHomePageState extends State<MyHomePage> {
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            Container(
-              child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Row(
                 children: <Widget>[
-                  Container(
-                    child: TextField(
-                      decoration: InputDecoration(labelText: "Id"),
-                      controller: idController,
-                      onChanged: (value) {
-                        setState(() {
-                          id = int.tryParse(value);
-                        });
+                  Expanded(
+                    child: FlatButton.icon(
+                      icon: Icon(Icons.account_box),
+                      label: Text("Admission Screen"),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => AdmissionScreen(),
+                          ),
+                        );
                       },
                     ),
                   ),
-                  Container(
-                    child: TextField(
-                      decoration: InputDecoration(labelText: "Name"),
-                      controller: nameController,
-                      onChanged: (value) {
-                        setState(() {
-                          name = value;
-                        });
-                      },
-                    ),
-                  ),
-                  Container(
-                    child: TextField(
-                      decoration: InputDecoration(labelText: "Address"),
-                      controller: addressController,
-                      onChanged: (value) {
-                        setState(() {
-                          address = value;
-                        });
-                      },
-                    ),
-                  ),
-                  Container(
-                    child: TextField(
-                      decoration: InputDecoration(labelText: "Email"),
-                      controller: emailController,
-                      onChanged: (value) {
-                        setState(() {
-                          email = value;
-                        });
-                      },
-                    ),
-                  ),
-                  Container(
-                    child: TextField(
-                      decoration: InputDecoration(labelText: "Phone"),
-                      controller: phoneController,
-                      onChanged: (value) {
-                        setState(() {
-                          phone = value;
-                        });
-                      },
-                    ),
-                  ),
+                  // Expanded(child: ,),
+                  // Expanded(child: ,),
                 ],
-              ),
-            ),
-            Row(
-              children: <Widget>[
-                Expanded(
-                  child: FlatButton(
-                    child: Text("Save"),
-                    onPressed: () async {
-                      var db = await dbhelper.db;
-                      // _db.insert(
-                      //   SchoolInfo(
-                      //       id: id,
-                      //       name: name,
-                      //       address: address,
-                      //       email: email,
-                      //       phone: phone),
-                      // );
-                      var si = SchoolInfo(
-                          name: name,
-                          block: address,
-                          district: address,
-                          dise: id.toString(),
-                          phone: phone,
-                          principal: email);
-                      dbhelper.db;
-                      print("Inside Save");
-                      await si.createTable(db);
-
-                      // await db.execute(
-                      // "INSERT INTO SchoolInfo(diseCode,principal,schoolName,block,pincode,mobileNumber) VALUES(${si.dise},${si.principal},${si.name},${si.block},111,${si.phone})");
-                      var x = await db.rawQuery("select * from SchoolInfo");
-                      print(x);
-                    },
-                  ),
-                ),
-                Expanded(
-                  child: FlatButton(
-                    child: Text("Update"),
-                    onPressed: () {
-                      // _db.updateDB(
-                      //   SchoolInfo(
-                      //       id: id,
-                      //       name: name,
-                      //       address: address,
-                      //       email: email,
-                      //       phone: phone),
-                      // );
-                    },
-                  ),
-                ),
-              ],
-            )
-          ],
-        ),
+              )
+            ]),
       ),
     );
   }

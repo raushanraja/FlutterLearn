@@ -21,6 +21,7 @@ class DatabaseManage {
       return x;
     } catch (e) {
       print("Error in inserting : $e");
+      return 0;
     }
   }
 
@@ -30,6 +31,7 @@ class DatabaseManage {
       return data;
     } catch (e) {
       print("Error occured at getAllData : $e");
+      return [];
     }
   }
 }
