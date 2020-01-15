@@ -28,15 +28,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-  final dbhelper = DBHelper.instance;
-  final TextEditingController idController = TextEditingController();
-  final TextEditingController nameController = TextEditingController();
-  final TextEditingController addressController = TextEditingController();
-  final TextEditingController emailController = TextEditingController();
-  final TextEditingController phoneController = TextEditingController();
-  int id = 0;
-  String name = "", address = "", email = "", phone = "";
   @override
   Widget build(BuildContext context) {
     return Scaffold(
