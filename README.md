@@ -1,3 +1,4 @@
-# flutter_db
+# sqflite_db
 
-A  Flutter application with SQFLITE 
+A new Flutter project with SQFLITE DB.
+
