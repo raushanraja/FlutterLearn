@@ -14,7 +14,8 @@
 *.ipr
 *.iws
 .idea/
-
+build/
+.dart_tool/
 # The .vscode folder contains launch configuration and tasks you configure in
 # VS Code which you may wish to be included in version control, so this line
 # is commented out by default.
@@ -71,3 +72,30 @@
 !**/ios/**/default.pbxuser
 !**/ios/**/default.perspectivev3
 !/packages/flutter_tools/test/data/dart_dependencies_test/**/.packages
+.flutter-plugins
+.gitignore
+.packages
+.dart_tool/package_config.json
+.dart_tool/flutter_build/e6539a7a45c9fa61e79a01f5474f42c5/.filecache
+.dart_tool/flutter_build/e6539a7a45c9fa61e79a01f5474f42c5/app.dill
+.dart_tool/flutter_build/e6539a7a45c9fa61e79a01f5474f42c5/kernel_snapshot.d
+.dart_tool/flutter_build/e6539a7a45c9fa61e79a01f5474f42c5/kernel_snapshot.stamp
+build/app/intermediates/flutter/debug/flutter_build.d
+build/app/intermediates/flutter/debug/libs.jar
+build/app/intermediates/flutter/debug/flutter_assets/kernel_blob.bin
+build/app/intermediates/incremental/debug-mergeJavaRes/zip-cache/M5PPbzj8CO4fF7epVHTT_rm4xnk=
+build/app/intermediates/incremental/debug-mergeNativeLibs/zip-cache/M5PPbzj8CO4fF7epVHTT_rm4xnk=
+build/app/intermediates/incremental/mergeDebugResources/compile-file-map.properties
+build/app/intermediates/incremental/packageDebug/tmp/debug/dex-renamer-state.txt
+build/app/intermediates/incremental/packageDebug/tmp/debug/zip-cache/DJy6gNjxbSZ+aWn5OpekI_hBQO8=
+build/app/intermediates/merged_assets/debug/out/flutter_assets/kernel_blob.bin
+build/app/intermediates/merged_java_res/debug/out.jar
+build/app/kotlin/compileDebugKotlin/build-history.bin
+build/app/kotlin/compileDebugKotlin/last-build.bin
+build/app/outputs/apk/app.apk
+build/app/outputs/apk/app.apk.sha1
+build/app/outputs/apk/debug/app-debug.apk
+build/path_provider/intermediates/compile_only_not_namespaced_r_class_jar/debug/R.jar
+build/path_provider/intermediates/incremental/packageDebugResources/compile-file-map.properties
+build/sqflite/intermediates/compile_only_not_namespaced_r_class_jar/debug/R.jar
+build/sqflite/intermediates/incremental/packageDebugResources/compile-file-map.properties
