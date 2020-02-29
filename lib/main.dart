@@ -1,36 +1,11 @@
-import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'authentication/auth_basic.dart';
+import 'dart:convert';
 
-// Loader
-Container loaderWidget() {
-    return Container(
-            color: Colors.white,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                SizedBox(
-                  child: CircularProgressIndicator(),
-                  width: 60,
-                  height: 60,
-                ),
-                const Padding(
-                  padding: EdgeInsets.only(top: 16),
-                  child: Text(
-                    'Loading...',
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 14,
-                      decoration: TextDecoration.none
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                )
-              ],
-            ),
-          );
-  }
+import 'package:flutter/material.dart';
+import 'package:login_flow/login/LoginPage.dart';
+import 'package:provider/provider.dart';
+import 'authentication/Firebase_Auth.dart';
+import 'authentication/auth_basic.dart';
+import 'constants/widget.dart';
 
 // 
 class Counter with ChangeNotifier {
@@ -44,6 +19,7 @@ class Counter with ChangeNotifier {
 void main() => runApp(MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => Counter()),
+        ChangeNotifierProvider(create: (context) => BasicAuth()),
         ChangeNotifierProvider(create: (context) => Auth())
       ],
       child: MyApp(),
@@ -59,19 +35,18 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       home: FutureBuilder(
-        future: Provider.of<Auth>(context)
-            .verifyUser(username: 'raushan', password: 'raushan'),
+        future: Provider.of<Auth>(context).getUser(),
         builder: (context, snapshot) {
-          Widget children;
-          if (snapshot.hasData) {
-            print(snapshot.data);
-            children = MyHomePage(
-              title: "Login App",
-            );
-          } else {
-            children = loaderWidget();
+          if (snapshot.connectionState == ConnectionState.done) {
+            if (snapshot.error != null) {
+              print("error");
+              return Text(snapshot.error.toString());
+            }
+            return snapshot.hasData ? MyHomePage(title:'hello') : LoginPage();
           }
-          return children;
+           else {
+            return loaderWidget();
+          }
         },
       ),
     );
@@ -104,6 +79,10 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             Consumer<Counter>(
                 builder: (context, counter, child) => Text('${counter.value}')),
+            FlatButton(onPressed: (){
+              Provider.of<Auth>(context,listen: false).logout();
+              Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>LoginPage()));
+            }, child: Text("Logout"))
           ],
         ),
       ),

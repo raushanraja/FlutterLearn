@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 
-class Auth with ChangeNotifier {
+class BasicAuth with ChangeNotifier {
   static const String _username = 'raushan';
   static const String _password = 'raushan';
 
