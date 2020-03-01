@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_ui_components/components/Login/login.dart';
+import 'package:flutter_ui_components/components/loadingIndicator/loading.dart';
 import 'components/listTile/ListTile_screen.dart';
 import 'package:flutter_ui_components/models/UIList.dart';
 
@@ -35,18 +36,24 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: ListView.builder(
-        itemCount: uilist.length,
-        itemBuilder: (context,index){
-          return ListTile(
-            leading: Text('${uilist[index].uiNumber}'),
-            title: Text('${uilist[index].uiName}'),
+      body: ListView(
+        children: <Widget>[
+          ListTile(
+            leading: Text('${uilist[0].uiNumber}'),
+            title: Text('${uilist[0].uiName}'),
             onTap:(){
               Navigator.push(context, MaterialPageRoute(builder: (context) => LoginScreen()));
             },
-          );
-        },
-      ),
+          ),
+          ListTile(
+            leading: Text('${uilist[1].uiNumber}'),
+            title: Text('${uilist[1].uiName}'),
+            onTap:(){
+              Navigator.push(context, MaterialPageRoute(builder: (context) => Loader()));
+            },
+          ),
+        ],
+      )
     );
   }
 }

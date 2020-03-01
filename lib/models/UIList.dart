@@ -53,5 +53,6 @@ class Uilist {
 
   static List<Uilist> uilist = [
     Uilist(uiNumber: 1, uiName: "Login"),
+    Uilist(uiNumber: 2, uiName: "Progress Indicator"),
   ];
 }
