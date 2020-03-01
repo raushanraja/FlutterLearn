@@ -1,14 +1,12 @@
 import 'dart:convert';
 
 class Uilist {
-
   final int uiNumber;
-  final String uiName; 
+  final String uiName;
   Uilist({
     this.uiNumber,
     this.uiName,
   });
-  
 
   Uilist copyWith({
     int uiNumber,
@@ -29,7 +27,7 @@ class Uilist {
 
   static Uilist fromMap(Map<String, dynamic> map) {
     if (map == null) return null;
-  
+
     return Uilist(
       uiNumber: map['uiNumber'],
       uiName: map['uiName'],
@@ -46,15 +44,14 @@ class Uilist {
   @override
   bool operator ==(Object o) {
     if (identical(this, o)) return true;
-  
-    return o is Uilist &&
-      o.uiNumber == uiNumber &&
-      o.uiName == uiName;
+
+    return o is Uilist && o.uiNumber == uiNumber && o.uiName == uiName;
   }
 
   @override
   int get hashCode => uiNumber.hashCode ^ uiName.hashCode;
 
-  static List<Uilist> uilist =[
-    Uilist(uiNumber: 1, uiName: "ListTile"),];
+  static List<Uilist> uilist = [
+    Uilist(uiNumber: 1, uiName: "Login"),
+  ];
 }
