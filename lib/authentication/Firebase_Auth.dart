@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:login_flow/database/database.dart';
 
 class Auth with ChangeNotifier {
   final GoogleSignIn _googleSignIn = GoogleSignIn();
@@ -14,11 +15,17 @@ class Auth with ChangeNotifier {
   // Logout
   //  GetCurrentUser
   Future<bool> logout() async {
-    await _googleSignIn.disconnect();
-    await _googleSignIn.signOut();
-    await _auth.signOut();
-    return true;
-  }
+      await _auth.signOut();
+      return true;
+    }
+
+  Future<bool> googleout() async {
+      await _googleSignIn?.disconnect();
+      await _googleSignIn.signOut();
+      await _auth.signOut();
+      return true;
+    }
+  
 
   // Google Login
   Future<FirebaseUser> handleSignIn() async {
@@ -46,7 +53,6 @@ class Auth with ChangeNotifier {
         : await _auth.signInWithCredential(credential);
     final FirebaseUser user = authResult?.user;
     print(user);
-
     return user;
   }
 
@@ -55,7 +61,9 @@ class Auth with ChangeNotifier {
     try {
       final AuthResult authResult = await _auth.signInWithEmailAndPassword(
           email: email, password: password);
-      return {"user": authResult.user, "error": null};
+      var documnet =authResult.user!=null? await DataService(UID: authResult.user.uid).getUsetInfo():null;
+      print(documnet?.data['name']);
+      return {"user": authResult.user, "error": null,"name":documnet!=null?documnet.data['name']:null};
     } catch (e) {
       print(e);
       List errorList = e.code.toString().split("_");
@@ -68,13 +76,14 @@ class Auth with ChangeNotifier {
 
   // Registration
   Future<Map<String, dynamic>> handleRegistration(
-      String email, String password) async {
+      String email, String password, String name) async {
     try {
       final AuthResult authResult = await _auth.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
       print("User Email is " + authResult.user.email);
+      await DataService(UID: authResult.user.uid).updateUserData(name, email);
       return {"user": authResult.user, "error": null};
     } catch (e) {
       print(e);

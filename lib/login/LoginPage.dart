@@ -13,11 +13,13 @@ class _LoginPageState extends State<LoginPage> {
   final _formLogin = GlobalKey<FormState>();
   final _formSignup = GlobalKey<FormState>();
 
+  String _name;
   String _emailID;
   String _password;
 
   var _emailIDController = TextEditingController();
   var _passwordController = TextEditingController();
+  var _nameController = TextEditingController();
   final TextStyle textstyle =
       TextStyle(color: Colors.white, fontWeight: FontWeight.bold);
 
@@ -26,12 +28,14 @@ class _LoginPageState extends State<LoginPage> {
     super.initState();
     _emailIDController.addListener(_changeEmailvalue);
     _passwordController.addListener(_changePasswordValue);
+    _nameController.addListener(_changeNameValue);
   }
 
   @override
   void dispose() {
     _emailIDController.dispose();
     _passwordController.dispose();
+    _nameController.dispose();
     super.dispose();
   }
 
@@ -41,6 +45,11 @@ class _LoginPageState extends State<LoginPage> {
 
   void _changePasswordValue() {
     _password = _passwordController.text;
+  }
+
+
+  void _changeNameValue() {
+    _name = _nameController.text;
   }
 
   @override
@@ -61,7 +70,7 @@ class _LoginPageState extends State<LoginPage> {
                 ),
                 DefaultTabController(
                     length: 2,
-                    initialIndex: 1,
+                    initialIndex: 0,
                     child: Column(
                       children: <Widget>[
                         TabBar(
@@ -77,6 +86,7 @@ class _LoginPageState extends State<LoginPage> {
                           child: TabBarView(children: [
                             FormBuild(
                               formLogin: _formLogin,
+                              isSingup: false,
                               textstyle: textstyle,
                               singButton: SSignButton(
                                   textstyle: textstyle,
@@ -85,37 +95,35 @@ class _LoginPageState extends State<LoginPage> {
                                     var user = await Provider.of<Auth>(context,
                                             listen: false)
                                         .emailLogin(_emailID, _password);
-                                    if (user != null) {
+                                    if (user["error"]==null) {
                                       print(user["user"].email);
-                                       print(user["user"].email);
                                         Navigator.push(
                                           context,
                                           MaterialPageRoute(
                                             builder: (context) => MyHomePage(
-                                              title: '${user["user"].displayName}',
+                                              title: '${user["name"]}',
                                             ),
                                           ),
                                         );
                                     }
                                   },
                                   buttonColor: Colors.blueAccent),
-                              textEditingControllerEmail: _emailIDController,
-                              textEditingControllerPassword:
-                                  _passwordController,
+                              textEditingController: [_emailIDController,_passwordController],
+                        
                             ),
                             FormBuild(
                               formLogin: _formSignup,
+                              isSingup: true,
                               textstyle: textstyle,
                               singButton: SSignButton(
                                   textstyle: textstyle,
                                   buttonLabel: "Sign UP",
                                   onTap: () async {
-                                    if (_password != null || _emailID != null) {
+                                    if (_password != null || _emailID != null || _name!=null) {
                                       var user = await Provider.of<Auth>(
                                               context,
                                               listen: false)
-                                          .handleRegistration(
-                                              _emailID, _password);
+                                          .handleRegistration( _emailID, _password,_name);
                                       if (user["error"] == null) {
                                        print(user["user"].email);
                                       }else{
@@ -124,9 +132,8 @@ class _LoginPageState extends State<LoginPage> {
                                     }
                                   },
                                   buttonColor: Colors.blueAccent),
-                              textEditingControllerEmail: _emailIDController,
-                              textEditingControllerPassword:
-                                  _passwordController,
+                              textEditingController: [_emailIDController,_passwordController,_nameController],
+                            
                             ),
                           ]),
                         ),
@@ -185,15 +192,14 @@ class FormBuild extends StatelessWidget {
     @required GlobalKey<FormState> this.formLogin,
     @required this.textstyle,
     @required this.singButton,
-    @required this.textEditingControllerEmail,
-    @required this.textEditingControllerPassword,
+    @required this.textEditingController,
+    @required this.isSingup
   });
-
   final GlobalKey<FormState> formLogin;
   final TextStyle textstyle;
   final Widget singButton;
-  final TextEditingController textEditingControllerEmail;
-  final TextEditingController textEditingControllerPassword;
+  final List<TextEditingController> textEditingController;
+  final bool isSingup;
 
   @override
   Widget build(BuildContext context) {
@@ -203,17 +209,22 @@ class FormBuild extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
+         Visibility(
+           visible: isSingup,
+           child: InputField(
+            label: "Name",
+            onchange: (){},
+            textEditingController: textEditingController[textEditingController.length-1],
+          ),),
           InputField(
             label: "Email",
-            onchange: (value) {
-              print(value);
-            },
-            textEditingController: textEditingControllerEmail,
+            onchange: () {},
+            textEditingController: textEditingController[0],
           ),
           InputField(
             label: "Password",
             onchange: () {},
-            textEditingController: textEditingControllerPassword,
+            textEditingController: textEditingController[1],
           ),
           singButton
         ],
