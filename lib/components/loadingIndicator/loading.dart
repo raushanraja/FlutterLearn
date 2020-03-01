@@ -24,7 +24,6 @@ class _LoaderState extends State<Loader> {
                     setState(() {
                       isLoading = !isLoading;
                     });
-
                     Future.delayed(Duration(seconds: 4),(){
                       setState(() {
                         isLoading=!isLoading;
@@ -42,8 +41,7 @@ class _LoaderState extends State<Loader> {
                 child: ModalBarrier(dismissible: false,color: Colors.grey)),
               Center(child: CircularProgressIndicator(),)
             ],
-          ):Visibility(visible: false,child: Text("")),
-          
+          ):Container(),
         ],
       )
     );
