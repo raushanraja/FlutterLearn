@@ -14,57 +14,75 @@ class Auth with ChangeNotifier {
   // Logout
   //  GetCurrentUser
   Future<bool> logout() async {
+    await _googleSignIn.disconnect();
+    await _googleSignIn.signOut();
     await _auth.signOut();
     return true;
   }
 
   // Google Login
   Future<FirebaseUser> handleSignIn() async {
-     GoogleSignInAccount googleUser;
+    GoogleSignInAccount googleUser;
     try {
-       googleUser = await _googleSignIn.signIn();
+      googleUser = await _googleSignIn.signIn();
     } catch (e) {
-      googleUser=null;
+      googleUser = null;
     }
-print(googleUser);
+    print(googleUser);
     final GoogleSignInAuthentication googleAuth =
         await googleUser?.authentication;
 
-print(googleAuth);
+    print(googleAuth);
 
     final AuthCredential credential = GoogleAuthProvider.getCredential(
       accessToken: googleAuth?.accessToken,
       idToken: googleAuth?.idToken,
     );
 
-print(credential);
+    print(credential);
 
-    final AuthResult authResult =  googleUser==null?null : await _auth.signInWithCredential(credential);
+    final AuthResult authResult = googleUser == null
+        ? null
+        : await _auth.signInWithCredential(credential);
     final FirebaseUser user = authResult?.user;
-print(user);
+    print(user);
 
     return user;
   }
 
   // Login With Email
-  Future<FirebaseUser> emailLogin(String email, String password) async {
+  Future<Map<String, dynamic>> emailLogin(String email, String password) async {
     try {
       final AuthResult authResult = await _auth.signInWithEmailAndPassword(
           email: email, password: password);
-      return authResult.user;
+      return {"user": authResult.user, "error": null};
     } catch (e) {
-      return null;
+      print(e);
+      List errorList = e.code.toString().split("_");
+      return {
+        "user": null,
+        "error": errorList.sublist(1).join(" ").toLowerCase()
+      };
     }
   }
 
   // Registration
-  Future<FirebaseUser> handleRegistration(
+  Future<Map<String, dynamic>> handleRegistration(
       String email, String password) async {
-    final AuthResult authResult = await _auth.createUserWithEmailAndPassword(
-      email: email,
-      password: password,
-    );
-    print("User Email is " + authResult.user.email);
-    return authResult.user;
+    try {
+      final AuthResult authResult = await _auth.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+      print("User Email is " + authResult.user.email);
+      return {"user": authResult.user, "error": null};
+    } catch (e) {
+      print(e);
+      List errorList = e.code.toString().split("_");
+      return {
+        "user": null,
+        "error": errorList.sublist(1).join(" ").toLowerCase()
+      };
+    }
   }
 }

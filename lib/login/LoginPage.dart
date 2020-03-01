@@ -61,6 +61,7 @@ class _LoginPageState extends State<LoginPage> {
                 ),
                 DefaultTabController(
                     length: 2,
+                    initialIndex: 1,
                     child: Column(
                       children: <Widget>[
                         TabBar(
@@ -80,9 +81,22 @@ class _LoginPageState extends State<LoginPage> {
                               singButton: SSignButton(
                                   textstyle: textstyle,
                                   buttonLabel: "Login",
-                                  onTap: () {
-                                    print(_emailID);
-                                    print(_password);
+                                  onTap: () async {
+                                    var user = await Provider.of<Auth>(context,
+                                            listen: false)
+                                        .emailLogin(_emailID, _password);
+                                    if (user != null) {
+                                      print(user["user"].email);
+                                       print(user["user"].email);
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => MyHomePage(
+                                              title: '${user["user"].displayName}',
+                                            ),
+                                          ),
+                                        );
+                                    }
                                   },
                                   buttonColor: Colors.blueAccent),
                               textEditingControllerEmail: _emailIDController,
@@ -95,9 +109,19 @@ class _LoginPageState extends State<LoginPage> {
                               singButton: SSignButton(
                                   textstyle: textstyle,
                                   buttonLabel: "Sign UP",
-                                  onTap: () {
-                                    print(_emailID);
-                                    print(_password);
+                                  onTap: () async {
+                                    if (_password != null || _emailID != null) {
+                                      var user = await Provider.of<Auth>(
+                                              context,
+                                              listen: false)
+                                          .handleRegistration(
+                                              _emailID, _password);
+                                      if (user["error"] == null) {
+                                       print(user["user"].email);
+                                      }else{
+                                        print(user["error"]);
+                                      }
+                                    }
                                   },
                                   buttonColor: Colors.blueAccent),
                               textEditingControllerEmail: _emailIDController,
