@@ -20,19 +20,29 @@ class Auth with ChangeNotifier {
 
   // Google Login
   Future<FirebaseUser> handleSignIn() async {
-    final GoogleSignInAccount googleUser = await _googleSignIn.signIn();
-
+     GoogleSignInAccount googleUser;
+    try {
+       googleUser = await _googleSignIn.signIn();
+    } catch (e) {
+      googleUser=null;
+    }
+print(googleUser);
     final GoogleSignInAuthentication googleAuth =
-        await googleUser.authentication;
+        await googleUser?.authentication;
+
+print(googleAuth);
 
     final AuthCredential credential = GoogleAuthProvider.getCredential(
-      accessToken: googleAuth.accessToken,
-      idToken: googleAuth.idToken,
+      accessToken: googleAuth?.accessToken,
+      idToken: googleAuth?.idToken,
     );
 
-    final FirebaseUser user =
-        (await _auth.signInWithCredential(credential)).user;
-    print("signed in " + user.displayName);
+print(credential);
+
+    final AuthResult authResult =  googleUser==null?null : await _auth.signInWithCredential(credential);
+    final FirebaseUser user = authResult?.user;
+print(user);
+
     return user;
   }
 
