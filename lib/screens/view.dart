@@ -7,22 +7,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_circular_chart/flutter_circular_chart.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import '../constants.dart';
+
 class View extends StatefulWidget {
   @override
   _ViewState createState() => _ViewState();
 }
 
 class _ViewState extends State<View> {
-
-
-
   //  Chart Config Start
   static final GlobalKey<AnimatedCircularChartState> chartKey =
       GlobalKey<AnimatedCircularChartState>();
   static final Size chartSize = Size(200, 200);
   Chart tempChart =
       Chart(initialValue: 10, chartKey: chartKey, chartSize: chartSize);
-
 
   void _setValue(x) {
     setState(() {
@@ -60,6 +57,7 @@ class _ViewState extends State<View> {
     username: kUserName,
     password: kPassword,
     keepAlivePeriod: kKeepALivePeriod,
+    port: kPort
   );
 
   void _onConnected(MqttClient client, bool isConnected) {
@@ -67,6 +65,7 @@ class _ViewState extends State<View> {
     if (isConnected) {
       setState(() {
         message = "Connected";
+        mqttConnect.publishGetCurrent();
       });
     }
     client.subscribe('test/iot', MqttQos.atMostOnce);
@@ -82,6 +81,12 @@ class _ViewState extends State<View> {
       } else {
         setState(() {
           message = _message;
+          if (message == "LED OFF") {
+            _ledSwitch = false;
+          }
+          if (message == "LED ON") {
+            _ledSwitch = true;
+          }
         });
       }
     });
@@ -100,23 +105,17 @@ class _ViewState extends State<View> {
 
 //  MQTT Config End
 
-
   @override
-  void dispose(){
+  void dispose() {
     mqttConnect.disconnect();
     super.dispose();
   }
-
-
 
 //  State Variables
   String message = "Disconnected";
   Color _display = Colors.white;
   double _value = 10;
   bool _ledSwitch = false;
-
-
-
 
   @override
   Widget build(BuildContext context) {

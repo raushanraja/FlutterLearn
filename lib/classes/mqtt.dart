@@ -1,15 +1,21 @@
+import 'dart:io';
+
+import 'package:flutter/services.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:typed_data/typed_data.dart' as tt;
 
 class MqttConnect {
+  SecurityContext context = SecurityContext.defaultContext;
   String _serverUrl, _userName, _password, _message, _topic;
-  int _keepAlivePeriod;
+  int _keepAlivePeriod, _port;
   bool _isConnected = false;
   MqttClient _client;
+
   Function _onConnected, _onDisconnected;
   MqttConnect(
       {String serverUrl,
       int keepAlivePeriod,
+      int port,
       String username,
       String password,
       Function onConnected,
@@ -18,6 +24,7 @@ class MqttConnect {
     _keepAlivePeriod = keepAlivePeriod;
     _userName = username;
     _password = password;
+    _port = port;
   }
 
   tt.Uint8Buffer fet(String str) {
@@ -37,6 +44,10 @@ class MqttConnect {
     _client.publishMessage('test/iot', MqttQos.exactlyOnce, fet('0'));
   }
 
+  void publishGetCurrent() {
+    _client.publishMessage('test/iot', MqttQos.exactlyOnce, fet('get'));
+  }
+
   void publish1() {
     _client.publishMessage('test/iot', MqttQos.exactlyOnce, fet('1'));
   }
@@ -45,11 +56,26 @@ class MqttConnect {
     print('EXAMPLE::Ping response client callback invoked');
   }
 
+  void setContext() async {
+    final ByteData crtData = await rootBundle.load('assets/certificates.crt');
+    try {
+      context.setTrustedCertificatesBytes(crtData.buffer.asUint8List());
+    } catch (e) {
+      print('::setContext() exception at connection - $e');
+    }
+  }
+
   void configureMqtt() {
+    setContext();
     _client = MqttClient(_serverUrl, '');
+    _client.securityContext = context;
+    _client.setProtocolV311();
     _client.logging(on: false);
+    _client.secure = true;
     _client.keepAlivePeriod = _keepAlivePeriod;
     _client.pongCallback = _pongCallback;
+    _client.port = _port;    //
+
 // Setting Message to be sent when starting a connection
     final MqttConnectMessage connMess = MqttConnectMessage()
         .authenticateAs(_userName, _password)

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 const String kMqttSetver = ''; // Set value
 const String kUserName = ''; // Set Value
 const String kPassword = ''; // Set Value
+const int kPort = 8883;
 const int kKeepALivePeriod = 100;
 const Color kColor0 = Color(0xffd9ecf2);
 const Color kColor1 = Color(0xff00c3FF);

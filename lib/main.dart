@@ -1,7 +1,5 @@
 import 'package:basic_app/theme.dart';
 import 'package:flutter/material.dart';
-
-import 'constants.dart';
 import 'screens/view.dart';
 
 void main() => runApp(MyApp());
