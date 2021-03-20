@@ -137,11 +137,12 @@ class Signaling {
   void onMessage(message) async {
     Map<String, dynamic> mapData = message;
     var data = mapData['data'];
-
+    print('type: ${mapData['type']}' );
     switch (mapData['type']) {
       case 'peers':
         {
           List<dynamic> peers = data;
+          print('peer data $peers');
           if (this.onPeersUpdate != null) {
             Map<String, dynamic> event = new Map<String, dynamic>();
             event['self'] = _selfId;
@@ -152,12 +153,13 @@ class Signaling {
         break;
       case 'offer':
         {
+         
           var id = data['from'];
           var description = data['description'];
           var media = data['media'];
           var sessionId = data['session_id'];
+           print('inside offer $id $media ${description['type']}');
           this._sessionId = sessionId;
-
           if (this.onStateChange != null) {
             this.onStateChange(SignalingState.CallStateNew);
           }
@@ -263,33 +265,55 @@ class Signaling {
   }
 
   void connect() async {
-    var url = 'https://$_host';
+    var url = 'https://$_host:$_port/ws';
     _socket = SimpleWebSocket(url);
 
     print('connect to $url');
 
-    // _socket.onOpen = () {
-    //   print('onOpen');
-    //   this?.onStateChange(SignalingState.ConnectionOpen);
-    //   _send('new', {
-    //     'name': DeviceInfo.label,
-    //     'id': _selfId,
-    //     'user_agent': DeviceInfo.userAgent
-    //   });
-    // };
+    if (_turnCredential == null) {
+      try {
+        _turnCredential = await getTurnCredential(_host, _port);
+        /*{
+            "username": "1584195784:mbzrxpgjys",
+            "password": "isyl6FF6nqMTB9/ig5MrMRUXqZg",
+            "ttl": 86400,
+            "uris": ["turn:127.0.0.1:19302?transport=udp"]
+          }
+        */
+        _iceServers = {
+          'iceServers': [
+            {
+              'url': _turnCredential['uris'][0],
+              'username': _turnCredential['username'],
+              'credential': _turnCredential['password']
+            },
+          ]
+        };
+      } catch (e) {}
+    }
 
-    // _socket.onMessage = (message) {
-    //   print('Received data: ' + message);
-    //   JsonDecoder decoder = new JsonDecoder();
-    //   this.onMessage(decoder.convert(message));
-    // };
+    _socket.onOpen = () {
+      print('onOpen');
+      this?.onStateChange(SignalingState.ConnectionOpen);
+      _send('new', {
+        'name': DeviceInfo.label,
+        'id': _selfId,
+        'user_agent': DeviceInfo.userAgent
+      });
+    };
 
-    // _socket.onClose = (int code, String reason) {
-    //   print('Closed by server [$code => $reason]!');
-    //   if (this.onStateChange != null) {
-    //     this.onStateChange(SignalingState.ConnectionClosed);
-    //   }
-    // };
+    _socket.onMessage = (message) {
+      print('Received data: ' + message);
+      JsonDecoder decoder = new JsonDecoder();
+      this.onMessage(decoder.convert(message));
+    };
+
+    _socket.onClose = (int code, String reason) {
+      print('Closed by server [$code => $reason]!');
+      if (this.onStateChange != null) {
+        this.onStateChange(SignalingState.ConnectionClosed);
+      }
+    };
 
     await _socket.connect();
   }
