@@ -9,8 +9,8 @@ class Setting {
 
    Map<String,dynamic> toJson(){
      Map<String, String> map = {
-         'globalUrl':_localUrl,
-         'localUrl': _globalUrl
+         'globalUrl':_globalUrl,
+         'localUrl': _localUrl
        };
           return map;
    }
